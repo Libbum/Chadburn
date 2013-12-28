@@ -27,7 +27,14 @@ def get_status():
 
     with open(STATUSFILE, 'r') as status_file:
         status = status_file.read()
-    return status
+    return status.rstrip()
+
+def broadcast(message):
+    for ids, ws in clients.items():
+        if not ws.ws_connection.stream.socket:
+            del clients[ids]
+        else:
+            ws.write_message(message)
 
 @gen.engine
 def status_watcher():
@@ -47,9 +54,9 @@ def sig_handler(sig, frame):
     tornado.ioloop.IOLoop.instance().add_callback_from_signal(shutdown)
 
 def shutdown():
-    print "Shutting down EOT server (will wait up to %s seconds to complete running threads ...)" % MAX_WAIT
-    print "(Stopping Status Watcher...)"
+    print "Stopping Status Watcher..."
     observer.stop()
+    print "Shutting down EOT server (will wait up to %s seconds to complete running threads ...)" % MAX_WAIT
     
     instance = tornado.ioloop.IOLoop.instance()
     deadline = time.time() + MAX_WAIT
@@ -68,6 +75,7 @@ class ChangeHandler(PatternMatchingEventHandler):
     def on_modified(self, event):
         status = get_status()
         print "File modified! Current status: " + status
+        broadcast(status)
 
 class IndexHandler(tornado.web.RequestHandler):
     @tornado.web.asynchronous
@@ -78,10 +86,9 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
     def open(self):
         self.id = uuid.uuid4()
         self.stream.set_nodelay(True)
-        clients[self.id] = {"id": self.id, "object": self}
+        clients[self.id] = self
         print "New Client : %s" % (self.id)
         self.write_message("Connected to EOT Server")
-        tornado.ioloop.PeriodicCallback(self.ext_task, 10000, io_loop=None).start() #Testing Polling incase it's needed
 
     def on_message(self, message):        
         print "Received a message from Client %s : %s" % (self.id, message)
@@ -104,9 +111,6 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
         if self.id in clients:
             del clients[self.id]
     
-    def ext_task(self):
-        self.write_message("Scheduled")
-
 app = tornado.web.Application([
     (r'/', IndexHandler),
     (r'/websocket', WebSocketHandler),
