@@ -1,5 +1,6 @@
 #!/usr/bin/python2
 
+import os
 import tornado.ioloop
 import tornado.web
 import tornado.websocket
@@ -8,9 +9,16 @@ import uuid
 from tornado.options import define, options, parse_command_line
 
 define("port", default=8888, help="run on the given port", type=int)
+BASEDIR = os.path.abspath(os.path.dirname(__file__))
 
 #Store clients in a dictionary..
 clients = dict()
+
+def get_status():
+
+    with open('status.eot', 'r') as status_file:
+        status = status_file.read()
+    return status
 
 class IndexHandler(tornado.web.RequestHandler):
     @tornado.web.asynchronous
@@ -28,7 +36,13 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 
     def on_message(self, message):        
         print "Received a message from Client %s : %s" % (self.id, message)
-        self.write_message(u"Server echoed: " + message)
+        if (message == 'base'):
+            self.write_message(u"Base Directory: " + BASEDIR)
+        elif (message == 'status'):
+            status = get_status()
+            self.write_message(u"Current Status: " + status)
+        else:
+            self.write_message(u"Server echoed: " + message)
         
     def on_close(self):
         print "Client %s disconnected." % self.id
