@@ -18,6 +18,7 @@ define("status_file", default='status.eot', help="Location of the Chadburn statu
 BASEDIR = os.path.abspath(os.path.dirname(__file__))
 STATUSFILE = options.status_file
 MAX_WAIT = 5 #Seconds, before shutdown in signal
+observer = Observer()
 
 #Store clients in a dictionary..
 clients = dict()
@@ -33,15 +34,13 @@ def status_watcher():
     event_handler = ChangeHandler(patterns=[BASEDIR + '/' + STATUSFILE],
                                       ignore_directories=True,
                                       case_sensitive=True)
-    observer = Observer()
     observer.schedule(event_handler, BASEDIR, recursive=False)
     observer.start()
     try:
         while True:
             yield gen.Task(tornado.ioloop.IOLoop.instance().add_timeout, time.time() + 1)
-    #This needs to be changed, but will leave it for now...
-    except KeyboardInterrupt:
-        observer.stop()
+    except:
+        pass
     observer.join()
 
 def sig_handler(sig, frame):
@@ -49,6 +48,9 @@ def sig_handler(sig, frame):
 
 def shutdown():
     print "Shutting down EOT server (will wait up to %s seconds to complete running threads ...)" % MAX_WAIT
+    print "(Stopping Status Watcher...)"
+    observer.stop()
+    
     instance = tornado.ioloop.IOLoop.instance()
     deadline = time.time() + MAX_WAIT
  
