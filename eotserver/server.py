@@ -8,6 +8,7 @@ import tornado.web
 import tornado.websocket
 import uuid
 
+from tornado import gen
 from tornado.options import define, options, parse_command_line
 
 define("port", default=8888, help="Run Socket Server on the given port", type=int)
@@ -25,6 +26,12 @@ def get_status():
     with open(STATUSFILE, 'r') as status_file:
         status = status_file.read()
     return status
+
+@gen.engine
+def status_watcher():
+    print "Sleeping"
+    yield gen.Task(tornado.ioloop.IOLoop.instance().add_timeout, time.time() + 15)
+    print "Awake!"
 
 def sig_handler(sig, frame):
     tornado.ioloop.IOLoop.instance().add_callback_from_signal(shutdown)
@@ -93,5 +100,5 @@ if __name__ == '__main__':
     #Signal Register
     signal.signal(signal.SIGTERM, sig_handler)
     signal.signal(signal.SIGINT, sig_handler)
-
+    tornado.ioloop.IOLoop.instance().add_callback(status_watcher)
     tornado.ioloop.IOLoop.instance().start()
