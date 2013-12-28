@@ -24,6 +24,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
         clients[self.id] = {"id": self.id, "object": self}
         print "New Client : %s" % (self.id)
         self.write_message("Connected to EOT Server")
+        tornado.ioloop.PeriodicCallback(self.ext_task, 10000, io_loop=None).start()
 
     def on_message(self, message):        
         print "Received a message from Client %s : %s" % (self.id, message)
@@ -33,6 +34,9 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
         print "Client %s disconnected." % self.id
         if self.id in clients:
             del clients[self.id]
+    
+    def ext_task(self):
+        self.write_message("Scheduled")
 
 app = tornado.web.Application([
     (r'/', IndexHandler),
