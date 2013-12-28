@@ -10,13 +10,14 @@ import uuid
 
 from tornado import gen
 from tornado.options import define, options, parse_command_line
+from watchdog.observers import Observer
+from watchdog.events import PatternMatchingEventHandler
 
 define("port", default=8888, help="Run Socket Server on the given port", type=int)
 define("status_file", default='status.eot', help="Location of the Chadburn status file")
 BASEDIR = os.path.abspath(os.path.dirname(__file__))
 STATUSFILE = options.status_file
 MAX_WAIT = 5 #Seconds, before shutdown in signal
-
 
 #Store clients in a dictionary..
 clients = dict()
@@ -29,9 +30,19 @@ def get_status():
 
 @gen.engine
 def status_watcher():
-    print "Sleeping"
-    yield gen.Task(tornado.ioloop.IOLoop.instance().add_timeout, time.time() + 15)
-    print "Awake!"
+    event_handler = ChangeHandler(patterns=[BASEDIR + '/' + STATUSFILE],
+                                      ignore_directories=True,
+                                      case_sensitive=True)
+    observer = Observer()
+    observer.schedule(event_handler, BASEDIR, recursive=False)
+    observer.start()
+    try:
+        while True:
+            yield gen.Task(tornado.ioloop.IOLoop.instance().add_timeout, time.time() + 1)
+    #This needs to be changed, but will leave it for now...
+    except KeyboardInterrupt:
+        observer.stop()
+    observer.join()
 
 def sig_handler(sig, frame):
     tornado.ioloop.IOLoop.instance().add_callback_from_signal(shutdown)
@@ -49,6 +60,12 @@ def shutdown():
             instance.stop()
             print "Shutdown."
     terminate()
+
+class ChangeHandler(PatternMatchingEventHandler):
+
+    def on_modified(self, event):
+        status = get_status()
+        print "File modified! Current status: " + status
 
 class IndexHandler(tornado.web.RequestHandler):
     @tornado.web.asynchronous
@@ -72,7 +89,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
             self.write_message(u"EOT Status file: " + STATUSFILE)
         elif (message == 'shutdown'):
             #this probably wont happen in the production version, but it's useful for debugging...
-            self.write_message(u"Shuttingdown EOT Server")
+            self.write_message(u"Shutting down EOT Server")
             tornado.ioloop.IOLoop.instance().add_callback(shutdown)
         elif (message == 'status'):
             status = get_status()
@@ -100,5 +117,6 @@ if __name__ == '__main__':
     #Signal Register
     signal.signal(signal.SIGTERM, sig_handler)
     signal.signal(signal.SIGINT, sig_handler)
+
     tornado.ioloop.IOLoop.instance().add_callback(status_watcher)
     tornado.ioloop.IOLoop.instance().start()
