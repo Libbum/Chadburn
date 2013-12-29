@@ -13,7 +13,7 @@ from tornado.options import define, options, parse_command_line
 from watchdog.observers import Observer
 from watchdog.events import PatternMatchingEventHandler
 
-define("port", default=8888, help="Run Socket Server on the given port", type=int)
+define("port", default=1873, help="Run Socket Server on the given port", type=int)
 define("status_file", default='status.eot', help="Location of the Chadburn status file")
 BASEDIR = os.path.abspath(os.path.dirname(__file__))
 STATUSFILE = options.status_file
