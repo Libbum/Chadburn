@@ -1,0 +1,41 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden 
+}
+
+svg { 
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    height: 100%; 
+    width: 100% 
+}
+
+h1 {
+    font-size: 24pt;
+    font-family: "Georgia", serif;
+}
+
+div#console {
+    font-size: 14pt; 
+    height: 500px; 
+    width: 400px; 
+    overflow: scroll; 
+    border: 1px solid black;
+}
+
+div#debug {
+    position: absolute;
+    top: 20px;
+    left: 0px;
+    z-index: 5;
+}
+
+form input[type=text] {
+    width: 300px;
+}
+
+form input[type=submit] {
+    width: 90px;
+}

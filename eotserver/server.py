@@ -114,6 +114,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 app = tornado.web.Application([
     (r'/', IndexHandler),
     (r'/websocket', WebSocketHandler),
+    (r'/static/(.*)',tornado.web.StaticFileHandler, {'path': './static'},),
 ])
 
 if __name__ == '__main__':
