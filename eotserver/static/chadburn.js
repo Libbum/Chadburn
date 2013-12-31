@@ -45,6 +45,8 @@ function spin(angle, type) {
         Snap.select("#EOT").select("#handle").animate({ 
             transform: "r" + [angle, 1400, 1400]
         }, 1000, mina.backout);
+    } else {
+        document.getElementById('bell').play();
     }
 }
             

@@ -20,12 +20,16 @@ __Dependencies:__
 * [Watchdog](http://pythonhosted.org/watchdog/) (for the file watcher)
 
 __Status:__
-Currently the filewatcher will check for modifications on the status file, then push the updated status through the websocket to the status panel. Rudimentry debug control is also available but will probably be removed in the future. The socket server has graceful failures implimented as well; so most of the backend is completed. 
+Currently the filewatcher will check for modifications on the status file, then push the updated status through the websocket to the status panel. Rudimentry debug control is also available but will probably be removed in the future. The socket server has graceful failures implimented as well.
+
+The panel is now mostly complete too. SVG animations have been built, javascript control is working fine, push notifications update the panel and send a chime notification. All that's left is coding up a decent way of acknowleding the command..
 
 __TODO:__
 
 * [] Comment the server file
-* [] Rework `panel.html` to be actual panel-like rather than a debug box
+* [X] Rework `panel.html` to be actual panel-like rather than a debug box
+* [] Build acknowledgements into the panel
+* [] Remove debugging options or hide them so they don't complicate the panel
 
 Control Board
 -------------
