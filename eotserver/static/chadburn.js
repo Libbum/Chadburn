@@ -2,6 +2,7 @@ window.onload = function () {
     var eot = Snap.select("#EOT"),
         indicator = eot.select("#indicator"),
         handle = eot.select("#handle"),
+
         timer;
 
     var pivot = [1400, 1400];
@@ -34,10 +35,9 @@ window.onload = function () {
 
     timer = setTimeout(stop, 50);
             
-    eot.hover(spin,
-        function () {
-            timer = setTimeout(stop, 300);
-        }
-    );
+    eot.select("#full-area").click(function () {
+            spin();
+            timer = setTimeout(stop, 1300);
+    });
 };
 
