@@ -15,6 +15,7 @@ from watchdog.events import PatternMatchingEventHandler
 
 define("port", default=1873, help="Run Socket Server on the given port", type=int)
 define("status_file", default='status.eot', help="Location of the Chadburn status file")
+define("accept_file", default='accept.eot', help="Location of the Chadburn acceptance file")
 BASEDIR = os.path.abspath(os.path.dirname(__file__))
 STATUSFILE = options.status_file
 MAX_WAIT = 5 #Seconds, before shutdown in signal
@@ -28,6 +29,11 @@ def get_status():
     with open(STATUSFILE, 'r') as status_file:
         status = status_file.read()
     return status.rstrip()
+
+def write_accept(cmd):
+
+    with open(options.accept_file, 'w') as accept_file:
+        accept_file.write(cmd)
 
 def broadcast(message):
     for ids, ws in clients.items():
@@ -93,6 +99,9 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 
     def on_message(self, message):        
         print "Received a message from Client %s : %s" % (self.id, message)
+        
+        commands = message.split("&")
+        
         if (message == 'base'):
             self.write_message(u"Base Directory: " + BASEDIR)
         elif (message == 'file'):
@@ -104,6 +113,11 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
         elif (message == 'status'):
             status = get_status()
             self.write_message(u"Current Status: " + status)
+        elif (len(commands) > 1):
+            #Incomming command (for now this is just ACK)
+            if (commands[0] == 'Accept'):
+                self.write_message(u"Recieved Acceptance for state: " + commands[1])
+                write_accept(commands[1] + '\n')
         else:
             self.write_message(u"Server echoed: " + message)
         
