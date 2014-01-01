@@ -179,13 +179,23 @@
     </svg>
     <audio id="bell" src="static/bell.mp3" preload="auto"></audio>
     <div id="debug">
-        <h1>Websocket based E.O.T.</h1>
+        <a href="#modal">
+        <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 588.42 568.8">
+            <path style="fill:white; stroke:none" d="M 10.49,177.03 L 31.17,178.56 C 52.61,154.32 61.03,82.59 187.38,96.63 C 182.79,403.95 48.02,436.37 56.44,499.41 C 59.50,535.15 87.84,557.10 118.47,558.38 C 215.21,555.06 210.87,424.63 240.99,95.86 L 365.80,95.86 C 359.17,211.75 341.04,327.63 339,441.22 C 340.53,516.77 386.48,557.10 446.97,557.61 C 546.52,560.93 577.92,444.79 577.92,395.27 L 556.47,395.27 C 554.43,436.11 534.78,465.47 492.92,467.25 C 378.82,468.78 441.61,266.63 442.38,97.4 L 577.92,98.16 L 577.15,11.63 C 13.80,8.90 85.31,-2.13 10.49,177.03 z" />
+        </svg>
+        </a>
+    </div>
+    <aside id="modal">
+        <header><h1>E.O.T. Debug Panel</h1></header>
+        <section>
         <div id="console"></div>
         <form id="conversation" onsubmit="DispatchResponse()" action="javascript:void(0);">
             <input type="text" id="message" name="message" autocomplete="off" />
-            <input type="submit" id="sub" name="sub" value="Send" />
+            <input type="submit" id="sub" name="sub" value="Send" class="btn inline" />
         </form>
-    </div>
+        </section>
+        <footer class="cf"><a href="#" class="btn">Close</a></footer>
+    </aside>
     <script type="text/javascript" src="static/socket.js"></script>
     </body>
 </html>

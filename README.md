@@ -29,7 +29,7 @@ __TODO:__
 * [] Comment the server file
 * [X] Rework `panel.html` to be actual panel-like rather than a debug box
 * [] Build acknowledgements into the panel
-* [] Remove debugging options or hide them so they don't complicate the panel
+* [X] Remove debugging options or hide them so they don't complicate the panel
 
 Control Board
 -------------
