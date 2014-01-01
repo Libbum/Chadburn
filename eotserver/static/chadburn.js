@@ -1,4 +1,5 @@
 window.onload = function () {
+    /* Snap.svg controllers, each click updates the handle position and sends an acceptance response through the socket */
     var eot = Snap.select("#EOT");
 
     eot.select("#stop-area").click(function () {

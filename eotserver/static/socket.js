@@ -1,9 +1,15 @@
+/* Socket controlling functions */
+
+/* The sockets adress will be updated to it's correct location after testing */
 var ws = new WebSocket("ws://192.168.1.42:1873/websocket");
 
 ws.onmessage = function(evt){
+    /* Debug log, may be removed in a future version */
     x = document.createElement("p");
     x.innerHTML = evt.data;
     document.getElementById("console").appendChild(x);
+
+    /* Checx to see if an additional command has been sent */
     var cmd = evt.data.split("&");
     var type = 0;
     if (cmd.length > 1) {
@@ -13,6 +19,7 @@ ws.onmessage = function(evt){
             type = 2;
         }
     }
+    /* If the message is a number from 1 to 11, this is interpreted as a status change */
     switch (cmd[0]) {
         case "1":
             /* Full */
@@ -64,6 +71,7 @@ ws.onmessage = function(evt){
 }
    
 function DispatchResponse(){
+    /* A debugging function to take the command written in the console and push it through the web socket */
     var userInput = document.getElementById("message").value;
     document.getElementById("message").value = "";
     x = document.createElement("p");
