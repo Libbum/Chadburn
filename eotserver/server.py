@@ -89,6 +89,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
         clients[self.id] = self
         print "New Client : %s" % (self.id)
         self.write_message("Connected to EOT Server")
+        self.write_message(get_status() + "&1") #Push initial status and assume acknowledgement
 
     def on_message(self, message):        
         print "Received a message from Client %s : %s" % (self.id, message)

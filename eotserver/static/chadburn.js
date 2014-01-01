@@ -37,15 +37,16 @@ window.onload = function () {
 };
 
 function spin(angle, type) {
-    if (type === 1) {        
+    if (type > 0) {        
         Snap.select("#EOT").select("#handle").animate({ 
             transform: "r" + [angle, 1400, 1400]
         }, 1000, mina.backout);
-    } else {
+    }
+    if (type !== 1) {
         Snap.select("#EOT").select("#indicator").animate({ 
             transform: "r" + [angle, 1400, 1400]
         }, 1500, mina.bounce);
-
+        
         document.getElementById("bell").play();
     }
 }

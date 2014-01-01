@@ -4,50 +4,59 @@ ws.onmessage = function(evt){
     x = document.createElement("p");
     x.innerHTML = evt.data;
     document.getElementById("console").appendChild(x);
-    switch (evt.data) {
+    var cmd = evt.data.split("&");
+    var type = 0;
+    if (cmd.length > 1) {
+        /* This may also be useful for ACK*/
+        if (cmd[1] === "1") {
+            /* Startup */
+            type = 2;
+        }
+    }
+    switch (cmd[0]) {
         case "1":
             /* Full */
-            spin(-104.20,0);
+            spin(-104.20,type);
             break;
         case "2":
             /* Half */
-            spin(-83.36,0);
+            spin(-83.36,type);
             break;
         case "3":
             /* Slow */
-            spin(-62.52,0);
+            spin(-62.52,type);
             break;
         case "4":
             /* Reverse */
-            spin(-41.68,0);
+            spin(-41.68,type);
             break;
         case "5":
             /* Next */
-            spin(-20.84,0);
+            spin(-20.84,type);
             break;
         case "6":
             /* Stop */
-            spin(0,0);
+            spin(0,type);
             break;
         case "7":
             /* Coffee */
-            spin(20.84,0);
+            spin(20.84,type);
             break;
         case "8":
             /* Lunch */
-            spin(41.68,0);
+            spin(41.68,type);
             break;
         case "9":
             /* Engine Working Wrong */
-            spin(62.52,0);
+            spin(62.52,type);
             break;
         case "10":
             /* SIWOTI */
-            spin(83.36,0);
+            spin(83.36,type);
             break;
         case "11":
             /* Battle Stations */
-            spin(104.20,0);
+            spin(104.20,type);
             break;
         default:
             break;

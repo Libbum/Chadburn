@@ -80,7 +80,7 @@ form input[type=text] {
 }
 
 #modal header,#modal footer {
-    background:#f7f7f7;
+    background:#c0c0c0;
     border-bottom: 1px solid #e7e7e7;
     border-radius: 5px 5px 0 0;
     -moz-border-radius: 5px 5px 0 0;
