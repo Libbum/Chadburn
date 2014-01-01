@@ -3,12 +3,9 @@
 import os
 import signal
 import time
-import tornado.ioloop
-import tornado.web
-import tornado.websocket
 import uuid
 
-from tornado import gen
+from tornado import gen, ioloop, web, websocket
 from tornado.options import define, options, parse_command_line
 from watchdog.observers import Observer
 from watchdog.events import PatternMatchingEventHandler
@@ -51,20 +48,21 @@ def status_watcher():
     observer.start()
     try:
         while True:
-            yield gen.Task(tornado.ioloop.IOLoop.instance().add_timeout, time.time() + 1)
+            yield gen.Task(ioloop.IOLoop.instance().add_timeout, time.time() + 1)
     except:
         pass
     observer.join()
 
 def sig_handler(sig, frame):
-    tornado.ioloop.IOLoop.instance().add_callback_from_signal(shutdown)
+    ioloop.IOLoop.instance().add_callback_from_signal(shutdown)
 
 def shutdown():
+    broadcast("EOT Server is shutting down.")
     print "Stopping Status Watcher..."
     observer.stop()
     print "Shutting down EOT server (will wait up to %s seconds to complete running threads ...)" % MAX_WAIT
     
-    instance = tornado.ioloop.IOLoop.instance()
+    instance = ioloop.IOLoop.instance()
     deadline = time.time() + MAX_WAIT
  
     def terminate():
@@ -80,25 +78,25 @@ class ChangeHandler(PatternMatchingEventHandler):
 
     def on_modified(self, event):
         status = get_status()
-        print "File modified! Current status: " + status
+        print "Status changed to: " + status
         broadcast(status)
 
-class IndexHandler(tornado.web.RequestHandler):
-    @tornado.web.asynchronous
+class IndexHandler(web.RequestHandler):
+    @web.asynchronous
     def get(self):
         self.render("panel.html")
 
-class WebSocketHandler(tornado.websocket.WebSocketHandler):
+class WebSocketHandler(websocket.WebSocketHandler):
     def open(self):
         self.id = uuid.uuid4()
         self.stream.set_nodelay(True)
         clients[self.id] = self
-        print "New Client : %s" % (self.id)
+        print "New Client: %s" % (self.id)
         self.write_message("Connected to EOT Server")
         self.write_message(get_status() + "&1") #Push initial status and assume acknowledgement
 
     def on_message(self, message):        
-        print "Received a message from Client %s : %s" % (self.id, message)
+        print "Message from Client %s: %s" % (self.id, message)
         
         commands = message.split("&")
         
@@ -108,15 +106,15 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
             self.write_message(u"EOT Status file: " + STATUSFILE)
         elif (message == 'shutdown'):
             #this probably wont happen in the production version, but it's useful for debugging...
-            self.write_message(u"Shutting down EOT Server")
-            tornado.ioloop.IOLoop.instance().add_callback(shutdown)
+            self.write_message(u"Shutting down EOT Server...")
+            ioloop.IOLoop.instance().add_callback(shutdown)
         elif (message == 'status'):
             status = get_status()
             self.write_message(u"Current Status: " + status)
         elif (len(commands) > 1):
             #Incomming command (for now this is just ACK)
             if (commands[0] == 'Accept'):
-                self.write_message(u"Recieved Acceptance for state: " + commands[1])
+                self.write_message(u"Accepted state: " + commands[1])
                 write_accept(commands[1] + '\n')
         else:
             self.write_message(u"Server echoed: " + message)
@@ -126,10 +124,10 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
         if self.id in clients:
             del clients[self.id]
     
-app = tornado.web.Application([
+app = web.Application([
     (r'/', IndexHandler),
     (r'/websocket', WebSocketHandler),
-    (r'/static/(.*)',tornado.web.StaticFileHandler, {'path': './static'},),
+    (r'/static/(.*)', web.StaticFileHandler, {'path': './static'},),
 ])
 
 if __name__ == '__main__':
@@ -140,5 +138,5 @@ if __name__ == '__main__':
     signal.signal(signal.SIGTERM, sig_handler)
     signal.signal(signal.SIGINT, sig_handler)
 
-    tornado.ioloop.IOLoop.instance().add_callback(status_watcher)
-    tornado.ioloop.IOLoop.instance().start()
+    ioloop.IOLoop.instance().add_callback(status_watcher)
+    ioloop.IOLoop.instance().start()

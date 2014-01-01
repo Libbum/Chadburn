@@ -1,4 +1,4 @@
-var ws = new WebSocket("ws://localhost:1873/websocket");
+var ws = new WebSocket("ws://192.168.1.42:1873/websocket");
 
 ws.onmessage = function(evt){
     x = document.createElement("p");
