@@ -22,11 +22,11 @@ __Dependencies:__
 __Status:__
 Currently the filewatcher will check for modifications on the status file, then push the updated status through the websocket to the status panel. Rudimentry debug control is also available but will probably be removed in the future. The socket server has graceful failures implimented as well.
 
-The panel is now mostly complete too. SVG animations have been built, javascript control is working fine, push notifications update the panel and send a chime notification. All that's left is coding up a decent way of acknowleding the command..
+The panel is also complete. SVG animations have been built, javascript control is working fine, push notifications update the panel and send a chime notification. An accept command is sent once the user clicks to a control area.
 
 __TODO:__
 
-* [] Comment the server file
+* [X] Comment the server file
 * [X] Rework `panel.html` to be actual panel-like rather than a debug box
 * [X] Build acknowledgements into the panel
 * [X] Remove debugging options or hide them so they don't complicate the panel
@@ -34,4 +34,4 @@ __TODO:__
 Control Board
 -------------
 
-Will be using a [Teensy](http://www.pjrc.com/teensy/) once it arrives in the mail.
+Will be using a [Teensy](http://www.pjrc.com/teensy/), it has just arrived in the mail so prototyping will begin soon.
