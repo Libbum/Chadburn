@@ -35,3 +35,10 @@ Control Board
 -------------
 
 Will be using a [Teensy](http://www.pjrc.com/teensy/), it has just arrived in the mail so prototyping will begin soon.
+
+__Status:__
+Had to build the teensyduino from AUR, the dependencies took a bit; but now that's working fine and I can program the board no problems.
+
+Good news actually - looks like I'll be able to spit the status values directly to python through a serial connection; meaning no file watcher requirements! I've currently set up a minimal arduino program that will push a random status (between 1 and 11) every ten seconds - so I can recode the server to accept a serial connection and push that result through the web socket.
+
+Need to go switch shopping as well - may look in to a rotary switch or a set of momentary micro swithes; not sure what'll be the best just yet.
