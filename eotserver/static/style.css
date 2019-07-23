@@ -12,6 +12,12 @@ html {
     background-size: cover;
 }
 
+nav {
+    position: absolute;
+    top: 5vh;
+    left: 5vw;
+    z-index: 5;
+}
 svg#EOT { 
     position: fixed; 
     top: 0; 
