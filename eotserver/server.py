@@ -1,6 +1,3 @@
-"""
-The EOT Server
-"""
 #!/usr/bin/python
 
 import signal
@@ -123,6 +120,8 @@ if __name__ == '__main__':
     APP = make_app()
     APP.listen(options.port)
 
+    print("EOT Server listening for clients.")
+    print("Open http://127.0.0.1:1873 in two separate browser windows and select your location.")
     #Signal Register
     signal.signal(signal.SIGTERM, sig_handler)
     signal.signal(signal.SIGINT, sig_handler)

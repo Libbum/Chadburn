@@ -1,11 +1,11 @@
 html, body {
     margin: 0;
     padding: 0;
-    overflow: hidden 
+    overflow: hidden;
 }
 
 html {
-    background: url(bg.jpg) no-repeat center center fixed; 
+    background: url(bg.jpg) no-repeat center center fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
@@ -18,26 +18,34 @@ nav {
     left: 5vw;
     z-index: 5;
 }
-svg#EOT { 
-    position: fixed; 
-    top: 0; 
-    left: 0; 
-    height: 100%; 
-    width: 100% 
+
+fieldset {
+    background: white;
+    border: 0;
+    border-radius: 8px;
+    box-shadow: 2px 6px 20px 2px rgba(10,10,120,0.15);
+}
+
+svg#EOT {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
 }
 
 #console {
-    font-size: 14pt; 
+    font-size: 14pt;
     font-family: Arial, Helvetica, sans-serif;
-    height: 400px; 
-    overflow: auto; 
+    height: 400px;
+    overflow: auto;
     background: white;
     border: 1px solid #DDD;
     border-radius: 5px;
     box-shadow: 0 0 5px #DDD inset;
     color: #666;
     padding: 5px 10px;
-    outline: none;   
+    outline: none;
 }
 
 #debug {
@@ -57,7 +65,7 @@ form input[type=text] {
     color: #666;
     float: left;
     padding: 5px 10px;
-    outline: none;   
+    outline: none;
     width: 330px;
 }
 
@@ -118,11 +126,11 @@ form input[type=text] {
 }
 
 .btn:visited {
-  color: #fff;
+    color: #fff;
 }
 
 .btn:hover {
-  background: #3db3e5;
+    background: #3db3e5;
 }
 
 .inline {

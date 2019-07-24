@@ -92,7 +92,5 @@ function spin(angle, type, location) {
                 break;
         }
     }
-    console.log(current_handle);
-    console.log(current_indicator);
 }
 
